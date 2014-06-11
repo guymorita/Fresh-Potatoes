@@ -18,6 +18,7 @@
 @property (strong, nonatomic) NSArray *rottenTomatoesData;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (weak, nonatomic) IBOutlet UILabel *errorLabel;
+@property (strong, nonatomic) id <AFImageCache> imageCache;
 
 @end
 
@@ -36,6 +37,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.imageCache = [UIImageView sharedImageCache];
     // basically like document.ready
     
     // table views have no concept of how many there are and also what each should look like. so you have to make those explicit.
@@ -106,13 +108,21 @@
     NSDictionary *posters = movie[@"posters"];
     
     NSURL *url = [NSURL URLWithString:posters[@"thumbnail"]];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
     
-    [freshMovieCell.freshPosterView setImageWithURL:url];
-    
-//    NSDictionary *posters = movie[@"posters"];
-    
-//    freshMovieCell.freshPosterView.image = posters[@"thumbnail"];
-    
+    UIImage *cachedImage = [self.imageCache cachedImageForRequest:urlRequest];
+    if (cachedImage){
+        freshMovieCell.freshPosterView.image = cachedImage;
+    } else {
+        [freshMovieCell.freshPosterView setImageWithURLRequest:urlRequest placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+            freshMovieCell.freshPosterView.image = image;
+            [self.imageCache cacheImage:image forRequest:urlRequest];
+            
+        } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+            NSLog(@"failed");
+        }];
+    }
+   
     return freshMovieCell;
 }
 
