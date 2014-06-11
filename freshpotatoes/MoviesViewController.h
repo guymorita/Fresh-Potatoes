@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface MoviesViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+@property (strong, nonatomic) NSString *url;
 
 @end

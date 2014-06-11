@@ -15,13 +15,26 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    
-    
     MoviesViewController *viewcon = [[MoviesViewController alloc] init];
-    UINavigationController *navViewController = [[UINavigationController alloc] initWithRootViewController:viewcon];
+    MoviesViewController *viewcon2 = [[MoviesViewController alloc] init];
+    MoviesViewController *viewcon3 = [[MoviesViewController alloc] init];
+    
+    viewcon.title = @"Top Rentals";
+    viewcon2.title = @"New Releases";
+    viewcon3.title = @"Upcoming";
+    
+    viewcon.url = @"http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/top_rentals.json?apikey=g9au4hv6khv6wzvzgt55gpqs";
+    viewcon2.url = @"http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/new_releases.json?apikey=g9au4hv6khv6wzvzgt55gpqs";
+    viewcon3.url = @"http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/upcoming.json?apikey=g9au4hv6khv6wzvzgt55gpqs";
+    
+    UITabBarController *tabController = [[UITabBarController alloc] init];
+    [tabController setViewControllers:@[viewcon, viewcon2, viewcon3]];
+    
+    UINavigationController *navViewController = [[UINavigationController alloc] initWithRootViewController:tabController];
     
     navViewController.navigationBar.translucent = NO;
     navViewController.navigationBar.barTintColor = [UIColor brownColor];
+    tabController.navigationItem.title = @"Fresh Potatoes";
     // setting the self.window.rootViewController tells the appdelegate which view controller to start with.
 
     self.window.rootViewController = navViewController;
