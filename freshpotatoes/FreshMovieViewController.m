@@ -27,10 +27,8 @@
 {
     [super viewDidLoad];
     self.freshMovieSynopsis.preferredMaxLayoutWidth = 280;
-    
     self.freshMovieTitle.text = self.movieDetails[@"title"];
     self.freshMovieSynopsis.text = self.movieDetails[@"synopsis"];
-    
 
 }
 

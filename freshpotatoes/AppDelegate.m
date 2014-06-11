@@ -21,11 +21,10 @@
     UINavigationController *navViewController = [[UINavigationController alloc] initWithRootViewController:viewcon];
     
     navViewController.navigationBar.translucent = NO;
+    navViewController.navigationBar.barTintColor = [UIColor brownColor];
     // setting the self.window.rootViewController tells the appdelegate which view controller to start with.
 
     self.window.rootViewController = navViewController;
-    
-    
     
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];

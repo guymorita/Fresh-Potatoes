@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *moviesTableView;
 @property (strong, nonatomic) NSArray *rottenTomatoesData;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
+@property (weak, nonatomic) IBOutlet UILabel *errorLabel;
 
 @end
 
@@ -44,17 +45,12 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [self.moviesTableView addSubview:self.refreshControl];
-    
-    
-    // it's an async call. so you have to tell the table to reload itself once it returns
+
     self.moviesTableView.dataSource = self;
     self.moviesTableView.rowHeight = 130;
-    
     self.moviesTableView.delegate = self;
     
     [self.moviesTableView registerNib:[UINib nibWithNibName:@"FreshPotatoTableViewCell" bundle:nil] forCellReuseIdentifier:@"FreshMovieCell"];
-
-    
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -70,15 +66,16 @@
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         if (connectionError){
-            NSLog(@"Broken");
+            [UIView animateWithDuration:5 delay:0 options:UIViewAnimationCurveEaseIn animations:^{self.errorLabel.alpha = 1;} completion:nil];
         } else {
             id object = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-            //        NSLog(@"%@", object);
+
             self.rottenTomatoesData = object[@"movies"];
             [self.moviesTableView reloadData];
             // watch out for sending messages to a nil the first time.
             
         }
+        // it's an async call. so you have to tell the table to reload itself once it returns
         [self.refreshControl endRefreshing];
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideHUDForView:self.view animated:YES];
